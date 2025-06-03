@@ -17,6 +17,9 @@ jobs:
   install:
     runs-on: ubuntu-latest
 
+    outputs:
+      pnpm-store-dir-path: ${{steps.pnpm-store-dir-path.outputs.dir}}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -37,7 +40,6 @@ jobs:
         id: pnpm-store-dir-path
         run: echo "dir=$(pnpm store path)" >> $GITHUB_OUTPUT
 
-
       - name: Cache pnpm dependencies
         uses: actions/cache@v4
         with:
@@ -56,9 +58,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Recover pnpm dependencies
-        uses: actions/cache@v4
+      - uses: actions/cache@v4
         with:
-          path: ${{ needs.install.outputs.dir }}
+          path: ${{ needs.install.outputs.pnpm-store-dir-path }}
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
