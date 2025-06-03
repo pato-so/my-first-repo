@@ -31,7 +31,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install
@@ -40,7 +39,7 @@ jobs:
         id: pnpm-store-dir-path
         run: echo "dir=$(pnpm store path)" >> $GITHUB_OUTPUT
 
-      - name: Cache pnpm dependencies
+      - name: Cache pnpm store
         uses: actions/cache@v4
         with:
           path: ${{ steps.pnpm-store-dir-path.outputs.dir }}
@@ -57,13 +56,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          cache: 'pnpm'
 
-      - name: Recover pnpm dependencies
+      - name: Restore pnpm store from cache
         uses: actions/cache@v4
         with:
           path: ${{ needs.install.outputs.pnpm-store-dir-path }}
