@@ -14,11 +14,8 @@ permissions:
   contents: read
 
 jobs:
-  install:
+  lint:
     runs-on: ubuntu-latest
-
-    outputs:
-      pnpm-store-dir-path: ${{steps.pnpm-store-dir-path.outputs.dir}}
 
     steps:
       - name: Checkout repository
@@ -31,46 +28,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install
-
-      - name: Get pnpm store directory path
-        id: pnpm-store-dir-path
-        run: echo "dir=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - name: Cache pnpm store
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.pnpm-store-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
-
-  lint:
-    needs: install
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-
-      - name: Restore pnpm store from cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ needs.install.outputs.pnpm-store-dir-path }}
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
 
       - name: Run linters
         run: pnpm lint
