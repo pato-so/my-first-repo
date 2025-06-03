@@ -4,6 +4,8 @@
   "description": "some text",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint src",
+    "lint:fix": "npm run -- lint --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
