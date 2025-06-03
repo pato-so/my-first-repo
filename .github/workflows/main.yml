@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  build:    
     runs-on: ubuntu-latest
 
     steps:
@@ -34,6 +34,8 @@ jobs:
         run: pnpm install
 
   lint:
+    needs: build
+    
     runs-on: ubuntu-latest
 
     steps:
