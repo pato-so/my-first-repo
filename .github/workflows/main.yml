@@ -58,7 +58,7 @@ jobs:
       - name: Recover pnpm dependencies
         uses: actions/cache@v4
         with:
-          path: ${{ needs.pnpm-store-dir-path.outputs.dir }}
+          path: ${{ needs.install.outputs.dir }}
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
