@@ -34,4 +34,7 @@ jobs:
         run: pnpm install
 
       - name: Run linters
-        run: pnpm lint
+        run: pnpm lint:fix --max-warnings=0
+
+      - name: Check for changes
+        run: git diff HEAD --exit-code
