@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 jobs:
-  build:    
+  install:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,14 +33,35 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Get pnpm store directory path
+        id: pnpm-store-dir-path
+        run: echo "dir=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+
+      - name: Cache pnpm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-store-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
   lint:
-    needs: build
-    
+    needs: install
+
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Recover pnpm dependencies
+      - uses: actions/cache@v4
+        with:
+          path: ${{ needs.pnpm-store-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
 
       - name: Run linters
         run: pnpm lint
