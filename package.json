@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint src",
     "lint:fix": "pnpm lint --fix",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "devDependencies": {
     "@eslint/js": "9.28.0",
