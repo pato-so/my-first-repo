@@ -1,14 +1,23 @@
 name: CI
-
 on:
   push:
     branches:
       - main
       - develop
+    paths:
+      - .github/workflows/test.yml
+    paths-ignore:
+      - README.md
+      - .github/**
   pull_request:
     branches:
       - main
       - develop
+    paths:
+      - .github/workflows/test.yml
+    paths-ignore:
+      - README.md
+      - .github/**
 
 permissions:
   contents: read
